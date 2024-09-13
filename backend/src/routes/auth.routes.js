@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
   signInCtrl,
   signOutCtrl,
-  validateSessionCtrl,
+  validateSessionCtrl
 } from "../controllers/auth.controllers.js";
 import validarJwt from "../middlewares/validar-jwt.js";
 
