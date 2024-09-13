@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getAllTodosCtrl, createTask, updateTask, deleteTask} from "../controllers/todos.controllers.js";
+import { getAllTodosCtrl, createTaskCtrl, updateTaskCtrl, deleteTaskCtrl} from "../controllers/todos.controllers.js";
 import validarJwt from "../middlewares/validar-jwt.js";
 
 const todosRouter = Router();
@@ -7,13 +7,13 @@ const todosRouter = Router();
 todosRouter.get("/", validarJwt, getAllTodosCtrl);
 
 // Crear tarea
-todosRouter.post("/", validarJwt, createTask)
+todosRouter.post("/", validarJwt, createTaskCtrl)
 
 // Actualizar tarea
-todosRouter.put("/:id", validarJwt, updateTask)
+todosRouter.put("/:id", validarJwt, updateTaskCtrl)
 
 //Eliminar tarea
-todosRouter.delete("/:id", validarJwt, deleteTask)
+todosRouter.delete("/:id", validarJwt, deleteTaskCtrl)
 
 
 export { todosRouter };

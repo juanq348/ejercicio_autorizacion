@@ -8,68 +8,107 @@ export const getAllTodosCtrl = (req, res) => {
   res.json({ todos });
 };
 
-export const createTask = async (req,res) =>{
-  const {title, completed} = req.body
+export const createTaskCtrl = async (req,res) =>{
+  const userId = req.user.id;
+  const { title, completed } = req.body;
 
-  if(!title){
-    return res.status(400).json({msg:"Tiene que existir el título"});
-  } else if(title === ""){
-    return res.status(400).json({msg:"No puede ser un título vacío"});
-  } else if(typeof title !== "string"){
-    return res.status(400).json({msg: "Debe ser un string"});
+  if (!title) {
+    return res.status(400).json({ message: "El título es requerido" });
+  } else if (typeof title !== "string") {
+    return res.status(400).json({ message: "El título debe ser un string" });
+  } else if (title.length < 3) {
+    return res
+      .status(400)
+      .json({ message: "El título debe tener al menos 3 caracteres" });
   }
 
-  if(completed === undefined){
-    return res.status(400).json({msg:"Tiene que ingresar el estado de la tarea"})
-  } else if(typeof completed !== "boolean"){
-    return res.status(400).json({msg:"Debe ser un valor booleano"});
+  if (completed === undefined) {
+    return res
+      .status(400)
+      .json({ message: "El estado de la tarea es requerido" });
+  } else if (typeof completed !== "boolean") {
+    return res
+      .status(400)
+      .json({ message: "El estado de la tarea debe ser un booleano" });
   }
-  const newTask = {
+
+  const newTodo = {
     id: database.todos.length + 1,
     title,
     completed,
-    owner: req.user.id,
-  }
-  
-  database.todos.push(newTask);
-  res.json({msg:"Tarea creada con éxito"})
-}
+    owner: userId,
+  };
 
-export const updateTask = async (req,res) =>{
-  const id = req.params.id;
-  const {title, completed} = req.body;
+  database.todos.push(newTodo);
 
-  if(!title && completed === undefined){
-    return res.status(400).json({msg:"Tiene que existir el título y el estado de la tarea"});
-  } else if(title && title === ""){
-    return res.status(400).json({msg:"No puede ser un título vacío"});
-  } else if(title && typeof title !== "string"){
-    return res.status(400).json({msg: "Debe ser un string"});
-  } else if (completed !== undefined && typeof completed !== "boolean") {
-    return res.status(400).json({ message: "El estado de la tarea debe ser un valor booleano" });
-  }
-  const todo = database.todos.find((todo) => todo.id === id);
+  res.json({ message: "Tarea creada exitosamente" });
+};
 
-  if(!todo){
-    return res.status(404).json({msg:"No se encontro la tarea"});
+export const updateTaskCtrl = async (req,res) =>{
+  const userId = req.user.id;
+  const { id } = req.params;
+  const { title, completed } = req.body;
+
+  if (!title) {
+    return res.status(400).json({ message: "El título es requerido" });
+  } else if (typeof title !== "string") {
+    return res.status(400).json({ message: "El título debe ser un string" });
+  } else if (title.length < 3) {
+    return res
+      .status(400)
+      .json({ message: "El título debe tener al menos 3 caracteres" });
   }
 
-  todo.title = title;
-  todo.completed = completed;
-  res.json({msg:"Se actualizó la tarea con éxito"});
-
-}
-
-export const deleteTask = async (req, res) =>{
-  const id = req.params.id;
-  const index = database.todos.findIndex((todo) => todo.id===id);
-
-  if(index === -1){
-    return res.status(404).json({msg:"No se encontro la tarea"})
+  if (completed === undefined) {
+    return res
+      .status(400)
+      .json({ message: "El estado de la tarea es requerido" });
+  } else if (typeof completed !== "boolean") {
+    return res
+      .status(400)
+      .json({ message: "El estado de la tarea debe ser un booleano" });
   }
 
-  database.todos.splice(index, 1);
-  res.json({msg:"Tarea eliminada con éxito"});
-} 
+  const todoIndex = database.todos.findIndex((todo) => todo.id === Number(id));
+
+  if (todoIndex === -1) {
+    return res.status(404).json({ message: "Tarea no encontrada" });
+  }
+
+  if (database.todos[todoIndex].owner !== userId) {
+    return res
+      .status(403)
+      .json({ message: "No tienes permisos para modificar esta tarea" });
+  }
+
+  database.todos[todoIndex] = {
+    ...database.todos[todoIndex],
+    title,
+    completed,
+  };
+
+  res.json({ message: "Tarea actualizada exitosamente" });
+};
+
+export const deleteTaskCtrl = async (req, res) =>{
+  const userId = req.user.id;
+  const { id } = req.params;
+
+  const todoIndex = database.todos.findIndex((todo) => todo.id === Number(id));
+
+  if (todoIndex === -1) {
+    return res.status(404).json({ message: "Tarea no encontrada" });
+  }
+
+  if (database.todos[todoIndex].owner !== userId) {
+    return res
+      .status(403)
+      .json({ message: "No tienes permisos para eliminar esta tarea" });
+  }
+
+  database.todos.splice(todoIndex, 1);
+
+  res.json({ message: "Tarea eliminada exitosamente" });
+};
 
 
