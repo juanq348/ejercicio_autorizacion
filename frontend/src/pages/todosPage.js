@@ -1,205 +1,315 @@
 export const todosPage = () => {
+  // Crear el contenedor principal
   const container = document.createElement("div");
-  container.classList.add("flex", "flex-col", "items-center", "justify-center", "h-screen", "bg-gray-200");
+  container.className = "container mx-auto p-4 bg-gray-100";
 
+  // Botón para volver a Home
   const btnHome = document.createElement("button");
-  btnHome.classList.add("bg-blue-500", "text-white", "p-2", "rounded", "hover:bg-blue-600", "mb-4");
+  btnHome.className = "bg-blue-500 text-white px-4 py-2 rounded mb-4";
   btnHome.textContent = "Home";
   btnHome.addEventListener("click", () => {
     window.location.pathname = "/home";
   });
 
+  // Botón para agregar una tarea
+  const botonAgregarTarea = document.createElement("button");
+  botonAgregarTarea.textContent = "Agregar Tarea";
+  botonAgregarTarea.className = "bg-green-500 text-white px-4 py-2 rounded mb-4 ml-2";
+  botonAgregarTarea.addEventListener("click", () => {
+    modalAgregarTarea.style.display = "block";
+  });
+
+  // Modal para agregar una nueva tarea
+  const modalAgregarTarea = document.createElement("div");
+  modalAgregarTarea.className = "fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden";
+
+  const modalAgregarContenido = document.createElement("div");
+  modalAgregarContenido.className = "bg-white p-4 rounded";
+
+  const modalAgregarTitulo = document.createElement("h2");
+  modalAgregarTitulo.className = "text-xl font-bold mb-2";
+  modalAgregarTitulo.textContent = "Agregar Tarea";
+
+  const inputAgregarTitulo = document.createElement("input");
+  inputAgregarTitulo.className = "border p-2 w-full mb-2";
+  inputAgregarTitulo.type = "text";
+  inputAgregarTitulo.placeholder = "Título de la tarea";
+
+  const etiquetaAgregarCompletada = document.createElement("label");
+  etiquetaAgregarCompletada.className = "block mb-2";
+  etiquetaAgregarCompletada.textContent = "Completada";
+
+  const inputAgregarCompletada = document.createElement("input");
+  inputAgregarCompletada.type = "checkbox";
+  inputAgregarCompletada.className = "mr-2";
+
+  const botonAgregarGuardar = document.createElement("button");
+  botonAgregarGuardar.className = "bg-green-500 text-white px-4 py-2 rounded";
+  botonAgregarGuardar.textContent = "Guardar";
+
+  const botonAgregarCancelar = document.createElement("button");
+  botonAgregarCancelar.className = "bg-red-500 text-white px-4 py-2 rounded ml-2";
+  botonAgregarCancelar.textContent = "Cancelar";
+
+  modalAgregarContenido.append(modalAgregarTitulo, inputAgregarTitulo, etiquetaAgregarCompletada, inputAgregarCompletada, botonAgregarGuardar, botonAgregarCancelar);
+  modalAgregarTarea.appendChild(modalAgregarContenido);
+
+  container.appendChild(modalAgregarTarea);
+
+  botonAgregarCancelar.addEventListener("click", () => {
+    modalAgregarTarea.style.display = "none";
+  });
+
+  // Modal para editar una tarea
+  const modalEditarTarea = document.createElement("div");
+  modalEditarTarea.className = "fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden";
+
+  const modalEditarContenido = document.createElement("div");
+  modalEditarContenido.className = "bg-white p-4 rounded";
+
+  const modalEditarTitulo = document.createElement("h2");
+  modalEditarTitulo.className = "text-xl font-bold mb-2";
+  modalEditarTitulo.textContent = "Editar Tarea";
+
+  const inputEditarTitulo = document.createElement("input");
+  inputEditarTitulo.className = "border p-2 w-full mb-2";
+  inputEditarTitulo.type = "text";
+  inputEditarTitulo.placeholder = "Título de la tarea";
+
+  const etiquetaEditarCompletada = document.createElement("label");
+  etiquetaEditarCompletada.className = "block mb-2";
+  etiquetaEditarCompletada.textContent = "Completada";
+
+  const inputEditarCompletada = document.createElement("input");
+  inputEditarCompletada.type = "checkbox";
+  inputEditarCompletada.className = "mr-2";
+
+  const botonEditarGuardar = document.createElement("button");
+  botonEditarGuardar.className = "bg-green-500 text-white px-4 py-2 rounded";
+  botonEditarGuardar.textContent = "Guardar";
+
+  const botonEditarCancelar = document.createElement("button");
+  botonEditarCancelar.className = "bg-red-500 text-white px-4 py-2 rounded ml-2";
+  botonEditarCancelar.textContent = "Cancelar";
+
+  modalEditarContenido.append(modalEditarTitulo, inputEditarTitulo, etiquetaEditarCompletada, inputEditarCompletada, botonEditarGuardar, botonEditarCancelar);
+  modalEditarTarea.appendChild(modalEditarContenido);
+
+  container.appendChild(modalEditarTarea);
+
+  botonEditarCancelar.addEventListener("click", () => {
+    modalEditarTarea.style.display = "none";
+  });
+
+  // Título de la página
   const title = document.createElement("h1");
-  title.classList.add("text-3xl", "font-bold", "mb-4");
-  title.textContent = "List of Todos";
+  title.className = "text-2xl font-bold mb-4";
+  title.textContent = "Lista de Tareas";
 
+  // Crear la tabla
   const table = document.createElement("table");
-  table.classList.add("w-1/2", "bg-white", "shadow-md", "h-[700px]", "overflow-y-scroll");
+  table.className = "w-full bg-white border";
 
+  // Cabecera de la tabla
   const thead = document.createElement("thead");
-  const tr = document.createElement("tr");
-  const th1 = document.createElement("th");
-  th1.classList.add("border", "px-4", "py-2");
-  th1.textContent = "ID";
+  const trHead = document.createElement("tr");
 
-  const th2 = document.createElement("th");
-  th2.classList.add("border", "px-4", "py-2");
-  th2.textContent = "Title";
+  const headers = ["ID", "Título", "Completada", "Owner Id", "Acciones"];
+  headers.forEach((header) => {
+    const th = document.createElement("th");
+    th.className = "border p-2";
+    th.textContent = header;
+    trHead.appendChild(th);
+  });
 
-  const th3 = document.createElement("th");
-  th3.classList.add("border", "px-4", "py-2");
-  th3.textContent = "Completed";
+  thead.appendChild(trHead);
 
-  const th4 = document.createElement("th");
-  th4.classList.add("border", "px-4", "py-2");
-  th4.textContent = "Owner Id";
-
-  const th5 = document.createElement("th");
-  th5.classList.add("border", "px-4", "py-2");
-  th5.textContent = "Acciones";
-
-  tr.appendChild(th1);
-  tr.appendChild(th2);
-  tr.appendChild(th3);
-  tr.appendChild(th4);
-  tr.appendChild(th5);
-  thead.appendChild(tr);
-
+  // Cuerpo de la tabla
   const tbody = document.createElement("tbody");
-  tbody.classList.add("text-center");
-  table.appendChild(thead);
-  table.appendChild(tbody);
 
-  container.appendChild(btnHome);
+  table.append(thead, tbody);
 
-  fetch("http://localhost:4000/todos", { credentials: "include" })
+  // Añadir elementos al contenedor
+  container.append(btnHome, botonAgregarTarea, title, table);
+
+  // Fetch para obtener los todos
+  fetch("http://localhost:4000/todos", {
+    credentials: "include"
+  })
     .then((response) => response.json())
     .then((data) => {
+      tbody.innerHTML = ''; // Limpiar el cuerpo de la tabla antes de agregar nuevas filas
+
       data.todos.forEach((todo) => {
+        if (todo.id > 10) return;
+
         const tr = document.createElement("tr");
 
-        const td1 = document.createElement("td");
-        td1.classList.add("border", "px-4", "py-2");
-        td1.textContent = todo.id;
+        const tdId = document.createElement("td");
+        tdId.className = "border p-2";
+        tdId.textContent = todo.id;
 
-        const td2 = document.createElement("td");
-        td2.classList.add("border", "px-4", "py-2");
-        td2.textContent = todo.title;
+        const tdTitulo = document.createElement("td");
+        tdTitulo.className = "border p-2";
+        tdTitulo.textContent = todo.title;
 
-        const td3 = document.createElement("td");
-        td3.classList.add("border", "px-4", "py-2");
-        td3.textContent = todo.completed ? "Sí" : "No";
+        const tdCompletado = document.createElement("td");
+        tdCompletado.className = "border p-2";
+        tdCompletado.textContent = todo.completed ? "Sí" : "No";
 
-        const td4 = document.createElement("td");
-        td4.classList.add("border", "px-4", "py-2");
-        td4.textContent = todo.owner;
+        const tdOwner = document.createElement("td");
+        tdOwner.className = "border p-2";
+        tdOwner.textContent = todo.owner;
 
-        const td5 = document.createElement("td");
-        td5.classList.add("border", "px-4", "py-2");
-
-        const deleteButton = document.createElement("button");
-        deleteButton.classList.add("bg-red-500", "text-white", "p-2", "rounded", "mr-2");
-        deleteButton.textContent = "Borrar";
-        deleteButton.addEventListener("click", () => {
-          tr.remove();
+        const botonEliminar = document.createElement("button");
+        botonEliminar.className = "bg-red-500 text-white px-2 py-1 rounded mr-1";
+        botonEliminar.textContent = "Eliminar";
+        botonEliminar.addEventListener("click", () => {
+          fetch(`http://localhost:4000/todos/${todo.id}`, {
+            method: "DELETE",
+            credentials: "include"
+          }).then(() => {
+            tr.remove(); // Elimina la fila de la tabla
+          });
         });
 
-        const updateButton = document.createElement("button");
-        updateButton.classList.add("bg-blue-500", "text-white", "p-2", "rounded");
-        updateButton.textContent = "Actualizar";
-        updateButton.addEventListener("click", () => {
-          showModal(todo); // Llamar al modal
+        const botonEditar = document.createElement("button");
+        botonEditar.className = "bg-yellow-500 text-white px-2 py-1 rounded";
+        botonEditar.textContent = "Editar";
+        botonEditar.addEventListener("click", () => {
+          // Mostrar el modal de editar tarea
+          inputEditarTitulo.value = todo.title;
+          inputEditarCompletada.checked = todo.completed;
+          modalEditarTarea.style.display = "block";
+
+          botonEditarGuardar.onclick = () => {
+            fetch(`http://localhost:4000/todos/${todo.id}`, {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                title: inputEditarTitulo.value,
+                completed: inputEditarCompletada.checked,
+              }),
+              credentials: "include"
+            }).then(() => {
+              // Actualizar la fila de la tabla
+              tdTitulo.textContent = inputEditarTitulo.value;
+              tdCompletado.textContent = inputEditarCompletada.checked ? "Sí" : "No";
+              modalEditarTarea.style.display = "none";
+            });
+          };
         });
 
-        td5.appendChild(deleteButton);
-        td5.appendChild(updateButton);
-        tr.appendChild(td1);
-        tr.appendChild(td2);
-        tr.appendChild(td3);
-        tr.appendChild(td4);
-        tr.appendChild(td5);
+        const tdAcciones = document.createElement("td");
+        tdAcciones.className = "border p-2";
+        tdAcciones.append(botonEliminar, botonEditar);
+
+        tr.append(tdId, tdTitulo, tdCompletado, tdOwner, tdAcciones);
+
         tbody.appendChild(tr);
       });
     });
 
-  container.appendChild(title);
-  container.appendChild(table);
+  // Agregar el formulario de agregar tarea al contenedor
+  const formularioAgregarTarea = document.createElement("form");
+  formularioAgregarTarea.className = "space-y-2";
 
+  formularioAgregarTarea.append(inputAgregarTitulo, etiquetaAgregarCompletada, inputAgregarCompletada, botonAgregarGuardar, botonAgregarCancelar);
+  modalAgregarContenido.appendChild(formularioAgregarTarea);
 
-  const addButton = document.createElement("button");
-  addButton.classList.add("bg-green-500", "text-white", "p-2", "rounded", "mt-4");
-  addButton.textContent = "Agregar Tarea";
-  addButton.addEventListener("click", () => {
-    showModal({ title: "", completed: false }); 
+  botonAgregarGuardar.addEventListener("click", (e) => {
+    e.preventDefault();
+    const nuevaTarea = {
+      title: inputAgregarTitulo.value,
+      completed: inputAgregarCompletada.checked,
+    };
+
+    fetch("http://localhost:4000/todos", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(nuevaTarea),
+      credentials: "include"
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const tr = document.createElement("tr");
+
+        const tdId = document.createElement("td");
+        tdId.className = "border p-2";
+        tdId.textContent = data.todo.id;
+
+        const tdTitulo = document.createElement("td");
+        tdTitulo.className = "border p-2";
+        tdTitulo.textContent = data.todo.title;
+
+        const tdCompletado = document.createElement("td");
+        tdCompletado.className = "border p-2";
+        tdCompletado.textContent = data.todo.completed ? "Sí" : "No";
+
+        const tdOwner = document.createElement("td");
+        tdOwner.className = "border p-2";
+        tdOwner.textContent = data.todo.owner;
+
+        const botonEliminar = document.createElement("button");
+        botonEliminar.className = "bg-red-500 text-white px-2 py-1 rounded mr-1";
+        botonEliminar.textContent = "Eliminar";
+        botonEliminar.addEventListener("click", () => {
+          fetch(`http://localhost:4000/todos/${data.todo.id}`, {
+            method: "DELETE",
+            credentials: "include"
+          }).then(() => {
+            tr.remove(); // Elimina la fila de la tabla
+          });
+        });
+
+        const botonEditar = document.createElement("button");
+        botonEditar.className = "bg-yellow-500 text-white px-2 py-1 rounded";
+        botonEditar.textContent = "Editar";
+        botonEditar.addEventListener("click", () => {
+          // Mostrar el modal de editar tarea
+          inputEditarTitulo.value = nuevaTarea.title;
+          inputEditarCompletada.checked = nuevaTarea.completed;
+          modalEditarTarea.style.display = "block";
+
+          botonEditarGuardar.onclick = () => {
+            fetch(`http://localhost:4000/todos/${data.todo.id}`, {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                title: inputEditarTitulo.value,
+                completed: inputEditarCompletada.checked,
+                owner: nuevaTarea.owner
+              }),
+              credentials: "include"
+            }).then(() => {
+              // Actualizar la fila de la tabla
+              tdTitulo.textContent = inputEditarTitulo.value;
+              tdCompletado.textContent = inputEditarCompletada.checked ? "Sí" : "No";
+              modalEditarTarea.style.display = "none";
+            });
+          };
+        });
+
+        const tdAcciones = document.createElement("td");
+        tdAcciones.className = "border p-2";
+        tdAcciones.append(botonEliminar, botonEditar);
+
+        tr.append(tdId, tdTitulo, tdCompletado, tdOwner, tdAcciones);
+
+        tbody.appendChild(tr);
+
+        // Limpiar el formulario y ocultar el modal
+        inputAgregarTitulo.value = '';
+        inputAgregarCompletada.checked = false;
+        modalAgregarTarea.style.display = "none";
+      });
   });
-  container.appendChild(addButton);
-
-  const showModal = (todo) => {
-    const modal = document.createElement("div");
-    modal.classList.add("fixed", "top-0", "left-0", "w-full", "h-full", "bg-black", "bg-opacity-50", "flex", "justify-center", "items-center");
-
-    const modalContent = document.createElement("div");
-    modalContent.classList.add("bg-white", "p-6", "rounded", "shadow-md");
-
-    const modalTitle = document.createElement("h2");
-    modalTitle.textContent = todo.id ? `Editando Tarea ${todo.id}` : "Agregar Nueva Tarea";
-    modalContent.appendChild(modalTitle);
-
-    const inputTitle = document.createElement("input");
-    inputTitle.value = todo.title;
-    inputTitle.classList.add("border", "p-2", "w-full", "mb-4");
-    modalContent.appendChild(inputTitle);
-
-    const completedCheckbox = document.createElement("input");
-    completedCheckbox.type = "checkbox";
-    completedCheckbox.checked = todo.completed;
-    modalContent.appendChild(completedCheckbox);
-    modalContent.appendChild(document.createTextNode(" Completada"));
-
-    const confirmButton = document.createElement("button");
-    confirmButton.textContent = todo.id ? "Actualizar" : "Agregar";
-    confirmButton.classList.add("bg-green-500", "text-white", "p-2", "rounded", "mr-2");
-    confirmButton.addEventListener("click", () => {
-      if (todo.id) {
-        // Actualizar tarea existente
-        const updatedTodo = {
-          title: inputTitle.value,
-          completed: completedCheckbox.checked,
-        };
-
-        fetch(`http://localhost:4000/todos/${todo.id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(updatedTodo),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log("Tarea actualizada:", data);
-            modal.remove();
-            window.location.reload(); 
-          })
-          .catch((error) => {
-            console.error("Error al actualizar tarea:", error);
-          });
-      } else {
-        const newTodo = {
-          title: inputTitle.value,
-          completed: completedCheckbox.checked,
-        };
-
-        fetch("http://localhost:4000/todos", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newTodo),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log("Tarea agregada:", data);
-            modal.remove();
-            window.location.reload(); 
-          })
-          .catch((error) => {
-            console.error("Error al agregar tarea:", error);
-          });
-      }
-    });
-    modalContent.appendChild(confirmButton);
-
-    const cancelButton = document.createElement("button");
-    cancelButton.textContent = "Cancelar";
-    cancelButton.classList.add("bg-red-500", "text-white", "p-2", "rounded");
-    cancelButton.addEventListener("click", () => {
-      modal.remove();
-    });
-    modalContent.appendChild(cancelButton);
-
-    modal.appendChild(modalContent);
-    container.appendChild(modal);
-  };
 
   return container;
 };
