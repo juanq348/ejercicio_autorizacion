@@ -1,9 +1,7 @@
 export const todosPage = () => {
-  // Crear el contenedor principal
   const container = document.createElement("div");
   container.className = "container mx-auto p-4 bg-gray-100";
 
-  // Botón para volver a Home
   const btnHome = document.createElement("button");
   btnHome.className = "bg-blue-500 text-white px-4 py-2 rounded mb-4";
   btnHome.textContent = "Home";
@@ -11,7 +9,6 @@ export const todosPage = () => {
     window.location.pathname = "/home";
   });
 
-  // Botón para agregar una tarea
   const botonAgregarTarea = document.createElement("button");
   botonAgregarTarea.textContent = "Agregar Tarea";
   botonAgregarTarea.className = "bg-green-500 text-white px-4 py-2 rounded mb-4 ml-2";
@@ -19,7 +16,6 @@ export const todosPage = () => {
     modalAgregarTarea.style.display = "block";
   });
 
-  // Modal para agregar una nueva tarea
   const modalAgregarTarea = document.createElement("div");
   modalAgregarTarea.className = "fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden";
 
@@ -60,7 +56,6 @@ export const todosPage = () => {
     modalAgregarTarea.style.display = "none";
   });
 
-  // Modal para editar una tarea
   const modalEditarTarea = document.createElement("div");
   modalEditarTarea.className = "fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden";
 
@@ -101,16 +96,13 @@ export const todosPage = () => {
     modalEditarTarea.style.display = "none";
   });
 
-  // Título de la página
   const title = document.createElement("h1");
   title.className = "text-2xl font-bold mb-4";
   title.textContent = "Lista de Tareas";
 
-  // Crear la tabla
   const table = document.createElement("table");
   table.className = "w-full bg-white border";
 
-  // Cabecera de la tabla
   const thead = document.createElement("thead");
   const trHead = document.createElement("tr");
 
@@ -124,21 +116,18 @@ export const todosPage = () => {
 
   thead.appendChild(trHead);
 
-  // Cuerpo de la tabla
   const tbody = document.createElement("tbody");
 
   table.append(thead, tbody);
 
-  // Añadir elementos al contenedor
   container.append(btnHome, botonAgregarTarea, title, table);
 
-  // Fetch para obtener los todos
   fetch("http://localhost:4000/todos", {
     credentials: "include"
   })
     .then((response) => response.json())
     .then((data) => {
-      tbody.innerHTML = ''; // Limpiar el cuerpo de la tabla antes de agregar nuevas filas
+      tbody.innerHTML = ''; 
 
       data.todos.forEach((todo) => {
         if (todo.id > 10) return;
@@ -169,7 +158,7 @@ export const todosPage = () => {
             method: "DELETE",
             credentials: "include"
           }).then(() => {
-            tr.remove(); // Elimina la fila de la tabla
+            tr.remove(); 
           });
         });
 
@@ -177,7 +166,6 @@ export const todosPage = () => {
         botonEditar.className = "bg-yellow-500 text-white px-2 py-1 rounded";
         botonEditar.textContent = "Editar";
         botonEditar.addEventListener("click", () => {
-          // Mostrar el modal de editar tarea
           inputEditarTitulo.value = todo.title;
           inputEditarCompletada.checked = todo.completed;
           modalEditarTarea.style.display = "block";
@@ -212,7 +200,6 @@ export const todosPage = () => {
       });
     });
 
-  // Agregar el formulario de agregar tarea al contenedor
   const formularioAgregarTarea = document.createElement("form");
   formularioAgregarTarea.className = "space-y-2";
 
@@ -234,8 +221,14 @@ export const todosPage = () => {
       body: JSON.stringify(nuevaTarea),
       credentials: "include"
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          return response.text().then(text => { throw new Error(text) })
+        }
+        return response.json();
+      })
       .then((data) => {
+        console.log(data);
         const tr = document.createElement("tr");
 
         const tdId = document.createElement("td");
@@ -262,7 +255,7 @@ export const todosPage = () => {
             method: "DELETE",
             credentials: "include"
           }).then(() => {
-            tr.remove(); // Elimina la fila de la tabla
+            tr.remove(); 
           });
         });
 
@@ -270,7 +263,6 @@ export const todosPage = () => {
         botonEditar.className = "bg-yellow-500 text-white px-2 py-1 rounded";
         botonEditar.textContent = "Editar";
         botonEditar.addEventListener("click", () => {
-          // Mostrar el modal de editar tarea
           inputEditarTitulo.value = nuevaTarea.title;
           inputEditarCompletada.checked = nuevaTarea.completed;
           modalEditarTarea.style.display = "block";
@@ -287,8 +279,8 @@ export const todosPage = () => {
                 owner: nuevaTarea.owner
               }),
               credentials: "include"
-            }).then(() => {
-              // Actualizar la fila de la tabla
+            })
+              .then(() => {
               tdTitulo.textContent = inputEditarTitulo.value;
               tdCompletado.textContent = inputEditarCompletada.checked ? "Sí" : "No";
               modalEditarTarea.style.display = "none";
